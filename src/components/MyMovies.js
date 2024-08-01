@@ -14,15 +14,30 @@ const Container = styled.div`
   color: white;
 `;
 
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1200px; /* Adjust as needed */
+  margin-bottom: 20px;
+`;
+
 const Title = styled.h1`
   font-size: 2rem;
-  margin-bottom: 20px;
+  margin: 0;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  gap: 10px; /* Space between buttons */
 `;
 
 const MoviesGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
+  width: 100%;
+  max-width: 1200px; /* Adjust as needed */
 `;
 
 const MovieCard = styled.div`
@@ -99,7 +114,6 @@ const LogoutButton = styled.button`
   cursor: pointer;
   border-radius: 5px;
   font-size: 1rem;
-  margin-bottom: 20px;
   transition: background-color 0.3s;
 
   &:hover {
@@ -178,9 +192,13 @@ const MyMovies = () => {
 
   return (
     <Container>
-      <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
-      <Title>My Movies</Title>
-      <button onClick={()=>{navigate('/add-movies')}}>Add Movies</button>
+      <Header>
+        <Title>My Movies</Title>
+        <ButtonContainer>
+          <button onClick={() => navigate('/add-movies')}>Add Movies</button>
+          <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
+        </ButtonContainer>
+      </Header>
       {editingMovie ? (
         <EditMovie
           movie={editingMovie}
