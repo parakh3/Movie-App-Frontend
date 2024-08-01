@@ -1,49 +1,10 @@
-// import React from 'react';
-// import { useForm } from 'react-hook-form';
-// import API from '../api';
-// import Layout from '../components/Layout';
-
-// const LoginPage = () => {
-//   const { register, handleSubmit } = useForm();
-
-//   const onSubmit = async (data) => {
-//     try {
-//       const response = await API.post('/auth/login', data);
-//       localStorage.setItem('token', response.data.token);
-//       // Redirect to movies or home page
-//     } catch (error) {
-//       console.error('Error logging in:', error);
-//     }
-//   };
-
-//   return (
-//     <Layout>
-//       <h1>Login</h1>
-//       <form onSubmit={handleSubmit(onSubmit)}>
-//         <label>Email</label>
-//         <input type="email" {...register('email', { required: true })} />
-
-//         <label>Password</label>
-//         <input type="password" {...register('password', { required: true })} />
-
-//         <button type="submit">Login</button>
-//       </form>
-//     </Layout>
-//   );
-// };
-
-// export default LoginPage;
-
-
-
-
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import API from '../api';
 import Layout from '../components/Layout';
 
-const LoginContainer = styled.div`
+const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -51,10 +12,18 @@ const LoginContainer = styled.div`
   background-color: #0a1f36;
 `;
 
-const LoginForm = styled.form`
+const FormWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+`;
+
+const Form = styled.form`
   background: #1a3d5d;
   padding: 60px;
-  width: 400px;
+  width: 100%;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -105,59 +74,98 @@ const Button = styled.button`
   }
 `;
 
-const Login = () => {
-  const { register, handleSubmit } = useForm();
-  const [credentials,setCredentials]=useState(false);
+const ToggleLink = styled.p`
+  margin-top: 20px;
+  color: #aaa;
+  cursor: pointer;
 
-  const onSubmit = async (data) => {
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const ErrorMessage = styled.p`
+  color: #dc3545;
+`;
+
+const Login = () => {
+  const [isLogin, setIsLogin] = useState(true); // Toggle between login and signup
+  const { register, handleSubmit } = useForm();
+  const [error, setError] = useState('');
+
+  const onSubmitLogin = async (data) => {
     try {
       const response = await API.post('/auth/login', data);
-      console.log("checking response",response)
-      if(response.data.code==200){
-          localStorage.setItem('token', response.data.token);
-          window.location.href = '/movies'; // Example redirect
-          setCredentials(false)
+      if (response.data.code === 200) {
+        localStorage.setItem('token', response.data.token);
+        window.location.href = '/movies'; // Example redirect
+      } else {
+        setError('Invalid Credentials');
       }
-      else{
-        setCredentials(true)
-      }
-      // Redirect to movies or home page
     } catch (error) {
       console.error('Error logging in:', error);
+      setError('Error logging in');
+    }
+  };
+
+  const onSubmitSignup = async (data) => {
+    try {
+      const response = await API.post('/auth/register', data);
+      console.log('Signup response:', response); // Debug log to check API response
+
+      if (response.data.code === 200) { // Adjust based on your API response
+        setIsLogin(true); // Switch to login form after successful signup
+        
+      } 
+    } catch (error) {
+      console.error('Error signing up:', error);
+      setError('Error signing up'); // General error message
     }
   };
 
   return (
     <Layout>
-      <LoginContainer>
-        <LoginForm onSubmit={handleSubmit(onSubmit)}>
-          <Title>Sign in</Title>
-          <FormGroup>
-            <Input
-              type="email"
-              placeholder="Email"
-              {...register('email', { required: true })}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Input
-              type="password"
-              placeholder="Password"
-              {...register('password', { required: true })}
-            />
-          </FormGroup>
-          <FormGroup>
-            <CheckboxLabel>
-              <Checkbox type="checkbox" />
-              Remember me
-            </CheckboxLabel>
-            <div>
-                {credentials?<p>Invalid Credentials</p>:''};
-            </div>
-          </FormGroup>
-          <Button type="submit">Login</Button>
-        </LoginForm>
-      </LoginContainer>
+      <Container>
+        <FormWrapper>
+          <Form onSubmit={handleSubmit(isLogin ? onSubmitLogin : onSubmitSignup)}>
+            <Title>{isLogin ? 'Sign in' : 'Sign up'}</Title>
+            {!isLogin && (
+              <FormGroup>
+                <Input
+                  type="text"
+                  placeholder="Name"
+                  {...register('name', { required: !isLogin })}
+                />
+              </FormGroup>
+            )}
+            <FormGroup>
+              <Input
+                type="email"
+                placeholder="Email"
+                {...register('email', { required: true })}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Input
+                type="password"
+                placeholder="Password"
+                {...register('password', { required: true })}
+              />
+            </FormGroup>
+            <FormGroup>
+              <CheckboxLabel>
+                <Checkbox type="checkbox" />
+                Remember me
+              </CheckboxLabel>
+            </FormGroup>
+            {error && <ErrorMessage>{error}</ErrorMessage>}
+            <Button type="submit">{isLogin ? 'Login' : 'Signup'}</Button>
+            <ToggleLink onClick={() => setIsLogin(!isLogin)}>
+              {isLogin ? 'Need an account? Sign up' : 'Already have an account? Log in'}
+            </ToggleLink>
+          </Form>
+        </FormWrapper>
+      </Container>
     </Layout>
   );
 };
