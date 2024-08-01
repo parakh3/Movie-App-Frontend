@@ -211,7 +211,7 @@ const MyMovies = () => {
             {movies.map((movie) => (
               <MovieCard key={movie._id}>
                 <MovieImage
-                  src={`http://localhost:5000/uploads/${movie.poster}?t=${new Date().getTime()}`}
+                  src={`https://movie-app-backend-vbs8.onrender.com/uploads/${movie.poster}?t=${new Date().getTime()}`}
                   alt={movie.title}
                 />
                 <MovieTitle>{movie.title}</MovieTitle>

@@ -28,7 +28,7 @@ const MovieList = () => {
           <li key={movie._id}>
             <h2>{movie.title}</h2>
             <p>{movie.publishingYear}</p>
-            <img src={`http://localhost:5000/uploads/${movie.poster}`} alt={movie.title} />
+            <img src={`https://movie-app-backend-vbs8.onrender.com/uploads/${movie.poster}`} alt={movie.title} />
           </li>
         ))}
       </ul>

@@ -101,7 +101,7 @@ const EditMovie = ({ movie, onCancel, onSave }) => {
 
   useEffect(() => {
     if (movie?.poster) {
-      setPreview(`http://localhost:5000/uploads/${movie.poster}?t=${new Date().getTime()}`);
+      setPreview(`https://movie-app-backend-vbs8.onrender.com/uploads/${movie.poster}?t=${new Date().getTime()}`);
     }
   }, [movie]);
 
