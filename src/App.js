@@ -12,7 +12,7 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/movies" element={<MoviePage />} />
-          <Route path="/" element={<Login/>} />
+          {/* <Route path="/" element={<Login/>} /> */}
           <Route path="/login" element={<Login/>} />
           <Route path="/add-movies" element={<CreateMovie />} />
         </Routes>
