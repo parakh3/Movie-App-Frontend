@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'https://movie-app-backend-vbs8.onrender.com/api', 
+  baseURL: 'https://movie-app-backend-vbs8.onrender.com', 
 });
 
 // Add a request interceptor to include token if available
