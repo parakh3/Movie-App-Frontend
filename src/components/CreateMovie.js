@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import API from '../api';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import { useNavigate } from 'react-router-dom';
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -13,24 +14,25 @@ const Container = styled.div`
 `;
 
 const Form = styled.form`
-  background: #132f3f;
+  background: #0e2a38;
   padding: 40px;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  width: 500px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  justify-content: center;
+  width: 70%;
 `;
 
-const Title = styled.h2`
+const Title = styled.h1`
   color: white;
-  text-align: center;
+  text-align: left;
+  width: 100%;
+  margin-bottom: 20px;
 `;
 
 const Label = styled.label`
   color: white;
-  margin-top: 20px;
   margin-bottom: 10px;
   align-self: flex-start;
 `;
@@ -43,18 +45,22 @@ const Input = styled.input`
   border-radius: 4px;
   background-color: #1b3a4b;
   color: white;
+  &::placeholder {
+    color: white;
+  }
 `;
 
 const ImageUploadContainer = styled.div`
-  width: 100%;
-  margin-bottom: 20px;
+  width: 300px;
+  height: 300px;
+  margin-right: 40px;
   position: relative;
 `;
 
 const ImageUpload = styled.div`
-  border: 2px dashed #4d4d4d;
+  border: 2px dashed hsla(0, 0%, 100%, 1);
   border-radius: 4px;
-  height: 200px;
+  height: 100%;
   width: 100%;
   display: flex;
   align-items: center;
@@ -72,6 +78,7 @@ const ButtonGroup = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
+  margin-top: 20px;
 `;
 
 const Button = styled.button`
@@ -79,16 +86,48 @@ const Button = styled.button`
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  width: 100%;
 `;
 
 const CancelButton = styled(Button)`
-  background-color: #333;
+  background-color: transparent;
+  border:1px solid white;
   color: white;
 `;
 
 const SubmitButton = styled(Button)`
   background-color: #28a745;
   color: white;
+  margin-left:10px;
+`;
+
+const CreateMovieContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  width: 100%;
+`;
+
+const FormContainer = styled.div`
+  display: flex;
+  align-items:start;
+  justify-content:start;
+  width:700px;
+`;
+
+
+const ImageUploadWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: center;
+`;
+
+const FormDetails = styled.div`
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 const CreateMovie = ({ movie }) => {
@@ -97,7 +136,8 @@ const CreateMovie = ({ movie }) => {
   });
 
   const [preview, setPreview] = useState(null);
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
+
   const onSubmit = async (data) => {
     try {
       const formData = new FormData();
@@ -112,7 +152,6 @@ const CreateMovie = ({ movie }) => {
       } else {
         await API.post('/movies', formData);
         navigate('/movies');
-        
       }
 
       reset();
@@ -132,40 +171,48 @@ const CreateMovie = ({ movie }) => {
 
   return (
     <Container>
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <Title>Create a new movie</Title>
-        <ImageUploadContainer>
-          <HiddenFileInput
-            type="file"
-            id="poster"
-            accept="image/*"
-            {...register('poster')}
-            onChange={handleImageUpload}
-          />
-          <ImageUpload
-            onClick={() => document.getElementById('poster').click()}
-          >
-            {preview ? (
-              <img
-                src={preview}
-                alt="Preview"
-                style={{ maxHeight: '100%', maxWidth: '100%' }}
+        <Form onSubmit={handleSubmit(onSubmit)}>
+        <CreateMovieContainer>
+        <Title>Create a new movie</Title> 
+          <FormContainer>
+          <ImageUploadWrapper>
+            <ImageUploadContainer>
+              <HiddenFileInput
+                type="file"
+                id="poster"
+                accept="image/*"
+                {...register('poster')}
+                onChange={handleImageUpload}
               />
-            ) : (
-              <span>Drop an image here or click to select</span>
-            )}
-          </ImageUpload>
-        </ImageUploadContainer>
-        <Label>Title</Label>
-        <Input type="text" {...register('title', { required: true })} />
-        <Label>Publishing Year</Label>
-        <Input type="number" {...register('publishingYear', { required: true })} />
-        <ButtonGroup>
-          <CancelButton type="button" onClick={() => reset()}>
-            Cancel
-          </CancelButton>
-          <SubmitButton type="submit">Submit</SubmitButton>
-        </ButtonGroup>
+              <ImageUpload
+                onClick={() => document.getElementById('poster').click()}
+              >
+                {preview ? (
+                  <img
+                    src={preview}
+                    alt="Preview"
+                    style={{ maxHeight: '100%', maxWidth: '100%' }}
+                  />
+                ) : (
+                  <span>Drop an image here</span>
+                )}
+              </ImageUpload>
+            </ImageUploadContainer>
+          </ImageUploadWrapper>
+          <FormDetails>
+            {/* <Label>Title</Label> */}
+            <Input type="text" placeholder='Title' {...register('title', { required: true })} />
+            {/* <Label>Publishing Year</Label> */}
+            <Input type="number" placeholder='Publishing Year' {...register('publishingYear', { required: true })} />
+            <ButtonGroup>
+              <CancelButton type="button" onClick={() => reset()}>
+                Cancel
+              </CancelButton>
+              <SubmitButton type="submit">Submit</SubmitButton>
+            </ButtonGroup>
+          </FormDetails>
+          </FormContainer>
+        </CreateMovieContainer>
       </Form>
     </Container>
   );
