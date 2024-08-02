@@ -140,7 +140,7 @@ const MyMovies = () => {
 
   const fetchMovies = async () => {
     try {
-      const { data } = await API.get(`api/movies?page=${currentPage}&limit=${moviesPerPage}`);
+      const { data } = await API.get(`/movies?page=${currentPage}&limit=${moviesPerPage}`);
       if (data.movies) {
         setMovies(data.movies);
         setTotalPages(Math.ceil(data.total / moviesPerPage));
